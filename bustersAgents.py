@@ -169,15 +169,14 @@ class GreedyBustersAgent(BustersAgent):
 
         # find the farthest possible ghost position from the pacman
         for key in livingGhostPositionDistributions:
-            for i in  key.iteritems():
-                # print i[0]
+            for i in key.iteritems():
                 thisPositionDistance = self.distancer.getDistance(pacmanPosition, i[0])
                 if thisPositionDistance > maxPossibleDistance:
                     maxPossibleDistance = thisPositionDistance
                     closestGhostPosition = i[0]
 
         # find the ghost closest to the pacman
-        for ghostID in range(1, len(livingGhosts)):
+        for ghostID in range(0, len(livingGhosts)):
             if ghostID == 0:
                 continue
             if livingGhosts[ghostID]:
