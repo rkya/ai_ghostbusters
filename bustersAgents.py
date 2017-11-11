@@ -10,7 +10,7 @@
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
-
+import sys
 
 import util
 from game import Agent
@@ -162,5 +162,40 @@ class GreedyBustersAgent(BustersAgent):
         livingGhostPositionDistributions = \
             [beliefs for i, beliefs in enumerate(self.ghostBeliefs)
              if livingGhosts[i+1]]
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+
+        closestGhostPosition = (0, 0)
+        maxPossibleDistance = 0
+
+        # find the farthest possible ghost position from the pacman
+        for key in livingGhostPositionDistributions:
+            for i in  key.iteritems():
+                # print i[0]
+                thisPositionDistance = self.distancer.getDistance(pacmanPosition, i[0])
+                if thisPositionDistance > maxPossibleDistance:
+                    maxPossibleDistance = thisPositionDistance
+                    closestGhostPosition = i[0]
+
+        # find the ghost closest to the pacman
+        for ghostID in range(1, len(livingGhosts)):
+            if ghostID == 0:
+                continue
+            if livingGhosts[ghostID]:
+                if ghostID > len(livingGhostPositionDistributions):
+                    continue
+                mostProbablePosition = max(livingGhostPositionDistributions[ghostID -1], key=livingGhostPositionDistributions[ghostID - 1].get)
+                if self.distancer.getDistance(pacmanPosition, closestGhostPosition) > self.distancer.getDistance(pacmanPosition, mostProbablePosition):
+                    closestGhostPosition = mostProbablePosition
+
+        # for all the new positions corresponding to an action, find the optimal action that brings the pacman closer
+        #  to the ghost
+        prevDistance = sys.maxsize
+        optimalAction = legal[0]
+        for action in legal:
+            successorPosition = Actions.getSuccessor(pacmanPosition, action)
+            currentDistance = self.distancer.getDistance(successorPosition, closestGhostPosition)
+            if prevDistance > currentDistance:
+                prevDistance = currentDistance
+                optimalAction = action
+
+        return optimalAction

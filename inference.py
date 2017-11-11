@@ -148,11 +148,6 @@ class ExactInference(InferenceModule):
         emissionModel = busters.getObservationDistribution(noisyDistance)
         pacmanPosition = gameState.getPacmanPosition()
 
-        "*** YOUR CODE HERE ***"
-        # util.raiseNotDefined()
-        # print "beliefs:", self.beliefs
-        # print "legalPositions: ", self.legalPositions
-        # print "noisyDistance", noisyDistance
         # Replace this code with a correct observation update
         # Be sure to handle the "jail" edge case where the ghost is eaten
         # and noisyDistance is None
@@ -171,7 +166,6 @@ class ExactInference(InferenceModule):
                     # P(trueDistance/noisyDistance) = P(noisyDistance/trueDistance) * P(trueDistance)
                     allPossible[p] = emissionModel[trueDistance] * self.beliefs[p]
 
-        "*** END YOUR CODE HERE ***"
 
         allPossible.normalize()
         self.beliefs = allPossible
@@ -240,7 +234,6 @@ class ExactInference(InferenceModule):
                 uniformDistribution[newPos] += prob * self.beliefs[p]
         uniformDistribution.normalize()
         self.beliefs = uniformDistribution
-        # self.beliefs = newPosDist
 
     def getBeliefDistribution(self):
         return self.beliefs
