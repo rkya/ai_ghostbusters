@@ -159,10 +159,16 @@ class ExactInference(InferenceModule):
         allPossible = util.Counter()
         for p in self.legalPositions:
             if noisyDistance is None:
+                # If the ghost is in jail, we set its probability of being at ghost position to 1
                 allPossible[self.getJailPosition()] = 1
             else:
                 trueDistance = util.manhattanDistance(p, pacmanPosition)
                 if emissionModel[trueDistance] > 0:
+                    # We need to calculate the probability of trueDistance, given noisyDistance
+                    # We already have probability of trueDistance, given noisyDistance - which is emissionModel[trueDistance]
+                    # beliefs list stores the distances we know already
+                    # using Bayes Theorem, we get:
+                    # P(trueDistance/noisyDistance) = P(noisyDistance/trueDistance) * P(trueDistance)
                     allPossible[p] = emissionModel[trueDistance] * self.beliefs[p]
 
         "*** END YOUR CODE HERE ***"
